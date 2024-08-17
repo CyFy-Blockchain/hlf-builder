@@ -1,0 +1,21 @@
+{
+  "name": "hlf-builder",
+  "version": "1.0.0",
+  "description": "This repo will be responsible for building and updating any HLF architecture changes",
+  "main": "index.ts",
+  "scripts": {
+    "start": "ts-node ./src/index.ts",
+    "dev": "nodemon --exec ts-node src/index.ts"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.3.0",
+    "nodemon": "^3.1.4",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  },
+  "dependencies": {
+    "yaml": "^2.5.0"
+  }
+}
