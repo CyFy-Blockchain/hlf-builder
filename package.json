@@ -5,7 +5,11 @@
   "main": "index.ts",
   "scripts": {
     "start": "ts-node ./src/index.ts",
-    "dev": "nodemon --exec ts-node src/index.ts"
+    "dev": "nodemon --exec ts-node src/index.ts",
+    "up-tls-server": "ts-node ./src/scripts/up-tls-server.ts && sh ./commands/start/tls-ca.sh",
+    "enroll-tls-admin": "ts-node ./src/scripts/enroll-tls-admin.ts",
+    "up-org-server": "ts-node ./src/scripts/up-org-server.ts && sh ./commands/start/org-ca.sh",
+    "enroll-org-admin": "ts-node ./src/scripts/enroll-org-admin.ts"
   },
   "author": "",
   "license": "ISC",

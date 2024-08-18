@@ -4,6 +4,16 @@ import fs from "fs";
 import { PATHS } from "../constants/paths";
 import { OrgCaConfigs } from "../interfaces/org-ca";
 import { runCommand } from "../utils/helper";
+import { config } from "../config/default";
+
+const orgConfig: OrgCaConfigs = {
+  caAdminUser: config.rcaAdmin.user,
+  caAdminPassword: config.rcaAdmin.pwd,
+  orgName: config.orgName,
+  listenAddress: config.rcaListenAddress,
+  port: config.rcaHosting.port,
+  csrHosts: [config.rcaHosting.host],
+};
 
 export async function initializeOrganizationCA(orgConfig: OrgCaConfigs) {
   await runCommand(`bash ${PATHS.INIT_ORG_CA_SH}`, [
@@ -36,3 +46,8 @@ export function updateOrganizationCA(orgConfig: OrgCaConfigs) {
   const newContent = yaml.stringify(yamlData);
   fs.writeFileSync(PATHS.CA_ORG_SERVER_CONFIG_YAML, newContent, "utf8");
 }
+
+(async () => {
+  await initializeOrganizationCA(orgConfig);
+  updateOrganizationCA(orgConfig);
+})();
