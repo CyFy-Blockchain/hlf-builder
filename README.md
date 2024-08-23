@@ -4,8 +4,9 @@ This Repo is responsible for creating and maintaining HLF components that are re
 
 ## Setup
 
-Firstly, go to [github](https://github.com/hyperledger/fabric-ca/releases), and download the binaries for CA server and client that are supported as per your architecture.
-Now, create a directory on root level, `bin` and keep your binaries in this directory.
+Firstly, go to [github for CA](https://github.com/hyperledger/fabric-ca/releases), and download the binaries for CA server and client that are supported as per your architecture.
+Now, you need binaries for Peer and Orderers. For that, you can download those binaries from [github for Peer & Orderers](https://github.com/hyperledger/fabric/releases).
+Now, create a directory on root level, `/bin` and keep your binaries in this directory.
 
 ## Running the code
 
@@ -48,7 +49,7 @@ Running these commands will generate the appropriate crypto materials for the Ro
 │   │           ├── IssuerRevocationPublicKey
 │   │           ├── cacerts
 │   │           ├── keystore
-│   │           │   └── bb9b87a9c1c4dfb4a94e8aa003fe58f10137aaaa1849d20c85a7ad916c769e35_sk
+│   │           │   └── bb9...9e35_sk
 │   │           ├── signcerts
 │   │           │   └── cert.pem
 │   │           ├── tlscacerts
@@ -73,3 +74,21 @@ Running these commands will generate the appropriate crypto materials for the Ro
     │       └── b8a...55ec_sk
     └── tls-cert.pem
 ```
+
+## Enrolling Users
+
+### Node Users - For Peers & Orderers
+
+This section particularly registers and enrolls users for Peers & Orderers. You can then bootstrap these enrolled users to create a Peer / Orderer.
+
+1. Go to `src/config/default.ts` and update the credentials for the `peer` & `orderer`
+2. Run `npm run register-node-user` to register the user in the TLS CA, and Org CA
+
+**🚨 It is highly important to register node user in the TLS CA, since they will be communicating with the network**
+
+## Start Peer
+
+To start a new Peer node, follow the following instructions:
+
+1. Go to `src/scripts/start-peer.ts` and place the identifier for the new peer user created. The identifier can be retrieved from the directory name in `src/fabric-ca-client/ORG_NAME/peer/<<IDENTIFIER HERE!!>>`
+2. Once you've replaced the correct value for identifier in the `start-peer.ts`, run `npm run start-peer`

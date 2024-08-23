@@ -8,4 +8,5 @@ export const config = {
   tlsHosting: { host: "localhost", port: 7055 },
   rcaHosting: { host: "localhost", port: 7054 },
   rcaListenAddress: "127.0.0.1:9444",
+  peer: { username: "test-peer", password: "test-peer-password" },
 };

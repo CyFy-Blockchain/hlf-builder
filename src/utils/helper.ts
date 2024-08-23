@@ -1,4 +1,10 @@
 import { exec } from "child_process";
+import { v4 as uuid4 } from "uuid";
+
+export function generateUuid() {
+  // return uuid4();
+  return "8bc631f7-e262-43f0-af58-791820422fbf";
+}
 
 export async function runCommand(
   command: string,
