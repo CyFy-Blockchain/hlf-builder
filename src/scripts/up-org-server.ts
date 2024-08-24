@@ -27,9 +27,12 @@ export function updateOrganizationCA(orgConfig: OrgCaConfigs) {
   const fileContent = fs.readFileSync(PATHS.CA_ORG_SERVER_CONFIG_YAML, "utf8");
   const yamlData = yaml.parse(fileContent);
 
+  yamlData.bccsp.sw.filekeystore.keystore = null;
+
   yamlData.tls.enabled = true;
   yamlData.tls.certfile = PATHS.CA_ORG_ADMIN_CREDS.CERT;
   yamlData.tls.keystore = PATHS.CA_ORG_ADMIN_CREDS.KEY;
+  yamlData.tls.keyfile = PATHS.CA_ORG_ADMIN_CREDS.KEY;
   yamlData.ca.name = orgConfig.orgName;
 
   if (orgConfig.port) yamlData.port = orgConfig.port;

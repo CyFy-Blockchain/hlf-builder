@@ -11,7 +11,7 @@ const tlsAdminConfig: NodeUserEnrollment = {
   tlsHostName: config.tlsHosting.host,
   tlsPort: config.tlsHosting.port,
   orgName: config.orgName,
-  nodeType: NodeType.ADMIN,
+  nodeType: NodeType.PEER,
   nodeIdentifier: generateUuid(),
 };
 

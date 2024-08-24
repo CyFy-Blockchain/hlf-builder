@@ -32,7 +32,15 @@ function getRequiredPaths(args: PeerConfig) {
     args.orgName,
     args.nodeIdentifier
   );
-  return { privKeyPath, tlsCertPath, peerConfigPath, pubKeyPath, peerOrgMsp };
+  const caKey = PATHS.PEER_PATHS.PEER_CA_KEY(args.orgName, args.nodeIdentifier);
+  return {
+    privKeyPath,
+    tlsCertPath,
+    peerConfigPath,
+    pubKeyPath,
+    peerOrgMsp,
+    caKey,
+  };
 }
 
 async function initPeer(args: PeerConfig) {
@@ -43,13 +51,20 @@ async function initPeer(args: PeerConfig) {
 }
 
 async function updatePeerConfiguration(args: PeerConfig) {
-  const { privKeyPath, pubKeyPath, tlsCertPath, peerConfigPath, peerOrgMsp } =
-    getRequiredPaths(args);
+  const {
+    privKeyPath,
+    pubKeyPath,
+    tlsCertPath,
+    peerConfigPath,
+    peerOrgMsp,
+    caKey,
+  } = getRequiredPaths(args);
 
   const fileContent = fs.readFileSync(peerConfigPath, "utf8");
   const yamlData = yaml.parse(fileContent);
 
   // update tls configurations
+  yamlData.peer.tls.enabled = true;
   yamlData.peer.tls.rootcert.file = tlsCertPath;
   yamlData.peer.tls.cert.file = pubKeyPath;
   yamlData.peer.tls.key.file = privKeyPath;
@@ -57,6 +72,8 @@ async function updatePeerConfiguration(args: PeerConfig) {
   // update org ca configuration
   yamlData.peer.mspConfigPath = peerOrgMsp;
 
+  delete yamlData.peer.BCCSP.PKCS11;
+  yamlData.peer.BCCSP.SW.FileKeyStore.KeyStore = caKey;
   // update the .yaml
   const newContent = yaml.stringify(yamlData);
   fs.writeFileSync(peerConfigPath, newContent, "utf8");

@@ -14,9 +14,9 @@ Now, create a directory on root level, `/bin` and keep your binaries in this dir
 
 1. Run `npm install`
 2. Review the configurations in the `./src/config` directory for the appropriate configurations
-3. Run `npm run up-tls-server` to up the CA TLS server
-4. Run `npm run enroll-tls-admin` to enroll the TLS admin
-5. Run `npm run up-org-server` to up the CA Org server
+3. If you're re deploying from scrach, run `npm run reset-repo`
+4. Run `npm run up-tls-server` to up the CA TLS server
+5. Run `npm run enroll-tls-admin && npm run up-org-server` to enroll the TLS admin, CA admin, and up the server
 6. Run `npm run enroll-org-admin` to enroll the Org admin
 
 Running these commands will generate the appropriate crypto materials for the Root CA Admin (rcaadmin), and TLS admin (tlsAdmin)
@@ -92,3 +92,7 @@ To start a new Peer node, follow the following instructions:
 
 1. Go to `src/scripts/start-peer.ts` and place the identifier for the new peer user created. The identifier can be retrieved from the directory name in `src/fabric-ca-client/ORG_NAME/peer/<<IDENTIFIER HERE!!>>`
 2. Once you've replaced the correct value for identifier in the `start-peer.ts`, run `npm run start-peer`
+
+## Helper CLI commands
+
+1. You can convert a given cert.pem file into understandable text by using this command `openssl x509 -in /path/to/file/cert.pem -text -noout`

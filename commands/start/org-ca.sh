@@ -8,9 +8,5 @@ cd $ROOT_DIR/fabric-ca-server
 rm ./ca-cert.pem
 rm -rf ./msp
 
-# Copy key.pem for Blockchain Crypto Service Provider (BCCSP) in msp/keystore
-mkdir -p msp/keystore
-cp ./tls/key.pem ./msp/keystore
-
 # start fabric-ca-server
 $BIN_SERVER start

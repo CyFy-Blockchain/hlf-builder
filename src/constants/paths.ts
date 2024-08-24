@@ -47,6 +47,8 @@ export const PATHS = {
       peerBasePath(orgName, nodeIdentifier) + "/tls-ca-cert.pem",
     PEER_TLS_PRIV_KEY: (orgName: string, nodeIdentifier: string) =>
       peerBasePath(orgName, nodeIdentifier) + "/tls/msp/keystore/peer-key.pem",
+    PEER_CA_KEY: (orgName: string, nodeIdentifier: string) =>
+      peerBasePath(orgName, nodeIdentifier) + "/ca/msp/keystore",
     PEER_TLS_PUB_KEY: (orgName: string, nodeIdentifier: string) =>
       peerBasePath(orgName, nodeIdentifier) + "/tls/msp/signcerts/cert.pem",
     PEER_ORG_MSP: (orgName: string, nodeIdentifier: string) =>
