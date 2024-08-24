@@ -13,7 +13,7 @@ Now, create a directory on root level, `/bin` and keep your binaries in this dir
 #### ⚠️ Make sure you have followed the setup first
 
 1. Run `npm install`
-2. Review the configurations in the `./src/config` directory for the appropriate configurations
+2. Review the configurations in the `./src/config/default` directory for the appropriate configurations
 3. If you're re deploying from scrach, run `npm run reset-repo`
 4. Run `npm run up-tls-server` to up the CA TLS server
 5. Run `npm run enroll-tls-admin && npm run up-org-server` to enroll the TLS admin, CA admin, and up the server
