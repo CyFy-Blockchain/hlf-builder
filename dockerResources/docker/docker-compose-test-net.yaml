@@ -5,8 +5,8 @@
 
 version: "3.7"
 services:
-  peer0.FAST.ums.com:
-    container_name: peer0.FAST.ums.com
+  peer0.org1.ums.com:
+    container_name: peer0.org1.ums.com
     image: hyperledger/fabric-peer:latest
     labels:
       service: hyperledger-fabric

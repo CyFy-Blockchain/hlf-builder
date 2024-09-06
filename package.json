@@ -6,13 +6,8 @@
   "scripts": {
     "start": "ts-node ./src/index.ts",
     "dev": "nodemon --exec ts-node src/index.ts",
-    "reset-repo": "rm -rf fabric-ca-client fabric-ca-server fabric-ca-server-tls",
-    "up-tls-server": "ts-node ./src/scripts/up-tls-server.ts && sh ./commands/start/tls-ca.sh",
-    "enroll-tls-admin": "ts-node ./src/scripts/enroll-tls-admin.ts",
-    "up-org-server": "ts-node ./src/scripts/up-org-server.ts && sh ./commands/start/org-ca.sh",
-    "enroll-org-admin": "ts-node ./src/scripts/enroll-org-admin.ts",
-    "register-node-user": "ts-node ./src/scripts/register-node-user.ts",
-    "start-peer": "ts-node ./src/scripts/start-peer.ts"
+    "up": "ts-node ./src/index.ts up",
+    "down": "ts-node ./src/index.ts down"
   },
   "author": "",
   "license": "ISC",

@@ -133,6 +133,4 @@ dist
 bin/
 
 # don't include fabric created files
-fabric-ca-client/
-fabric-ca-server/
-fabric-ca-server-tls/
+organizations/

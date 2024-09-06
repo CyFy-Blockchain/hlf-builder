@@ -1,9 +1,24 @@
 import { exec } from "child_process";
-import { v4 as uuid4 } from "uuid";
+import { ScriptMode } from "../interface/cliArgs";
 
-export function generateUuid() {
-  // return uuid4();
-  return "8bc631f7-e262-43f0-af58-791820422fbf";
+export function parseMode(mode: string) {
+  if (mode === "up") return ScriptMode.Up;
+  if (mode === "down") return ScriptMode.Down;
+
+  throw new Error(`Invalid mode "${mode}"`);
+}
+
+// for yaml data structures like ['key=value', ...]
+export function updateKeyValueInArray(
+  arr: string[],
+  key: string,
+  value: string | number
+) {
+  return arr.map((item) => {
+    const [k, v] = item.split("=");
+    if (k === key) return `${key}=${value}`;
+    return item;
+  });
 }
 
 export async function runCommand(
