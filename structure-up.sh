@@ -3,16 +3,16 @@
 . scripts/ca.sh    # imports the function to up peers, orderers, and CAs
 
 # External Params
-# ORG_NAME=$1
-# ADMIN_USERNAME=$2
-# ADMIN_PASS=$3
-# CA_PORT=$4
-# CA_HOST=$5
-ORG_NAME='FAST'
-ADMIN_USERNAME='admin'
-ADMIN_PASS='adminpw'
-CA_PORT=7054
-CA_HOST='localhost'
+ORG_NAME=$1
+ADMIN_USERNAME=$2
+ADMIN_PASS=$3
+CA_PORT=$4
+CA_HOST=$5
+# ORG_NAME='FAST'
+# ADMIN_USERNAME='admin'
+# ADMIN_PASS='adminpw'
+# CA_PORT=7054
+# CA_HOST='localhost'
 
 DATABASE='leveldb'
 CRYPTO='Certificate Authorities'

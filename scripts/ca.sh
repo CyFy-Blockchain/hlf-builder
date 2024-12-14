@@ -75,7 +75,7 @@ function registerEntity() {
 
   infoln "Registering $ENTITY_TYPE for $ORG_NAME"
   set -x
-  fabric-ca-client register --id.name $USERNAME --id.secret $PASS --id.type $ENTITY_TYPE --tls.certfiles "${PWD}/organizations/fabric-ca/$ORG_NAME/ca-cert.pem"
+  fabric-ca-client register --ca-name ca-$ORG_NAME --id.name $USERNAME --id.secret $PASS --id.type $ENTITY_TYPE --tls.certfiles "${PWD}/organizations/fabric-ca/$ORG_NAME/ca-cert.pem"
   { set +x; } 2>/dev/null
 }
 

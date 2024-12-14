@@ -14,11 +14,12 @@ export function updateKeyValueInArray(
   key: string,
   value: string | number
 ) {
-  return arr.map((item) => {
+  arr = arr.map((item) => {
     const [k, v] = item.split("=");
     if (k === key) return `${key}=${value}`;
     return item;
   });
+  return arr;
 }
 
 export async function runCommand(

@@ -13,21 +13,21 @@ export function updateCaYaml(caConfig: CaConfig) {
   const serverConfig = yamlData.services.ca_org1;
 
   // update ca server name
-  updateKeyValueInArray(
+  serverConfig.environment = updateKeyValueInArray(
     serverConfig.environment,
     "FABRIC_CA_SERVER_CA_NAME",
     "ca-" + caConfig.orgName
   );
 
   // update ca server port
-  updateKeyValueInArray(
+  serverConfig.environment = updateKeyValueInArray(
     serverConfig.environment,
     "FABRIC_CA_SERVER_PORT",
     caConfig.serverConnection.port
   );
 
   // update ca operations listen address
-  updateKeyValueInArray(
+  serverConfig.environment = updateKeyValueInArray(
     serverConfig.environment,
     "FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS",
     caConfig.operations.host + ":" + caConfig.operations.port

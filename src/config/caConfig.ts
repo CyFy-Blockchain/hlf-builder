@@ -1,13 +1,13 @@
 import { CaConfig } from "../interface/ca";
 
 export const caConfig: CaConfig = {
-  orgName: "FAST",
+  orgName: "NUST",
   serverConnection: {
-    port: 7054,
+    port: 7055,
     host: "localhost",
   },
   operations: {
-    port: 17054,
+    port: 17055,
     host: "0.0.0.0",
   },
   admin: {
