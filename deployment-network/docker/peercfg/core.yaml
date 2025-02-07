@@ -1,0 +1,124 @@
+# Minimal core.yaml for Hyperledger Fabric Peer
+
+# Logging level
+logging:
+  level: INFO
+
+peer:
+  # peer settings
+  id: peer0.org1.deployment.com
+  networkId: dev
+  address: peer0.org1.deployment.com:7153
+  listenAddress: 0.0.0.0:7153
+  localMspId: Org1DeploymentMSP
+  mspConfigPath: /etc/hyperledger/fabric/msp
+  profile:
+    enabled: false
+
+  # TLS settings
+  tls:
+    enabled: true
+    cert:
+      file: /etc/hyperledger/fabric/tls/server.crt
+    key:
+      file: /etc/hyperledger/fabric/tls/server.key
+    rootcert:
+      file: /etc/hyperledger/fabric/tls/ca.crt
+  
+  #Gossip Settings
+  gossip:
+    bootstrap: peer0.org1.deployment.com:7153
+    externalEndpoint: peer0.org1.deployment.com:7153
+
+  # BCCSP (Blockchain crypto provider): Select which crypto implementation or
+    # library to use
+  BCCSP:
+      Default: SW
+      # Settings for the SW crypto provider (i.e. when DEFAULT: SW)
+      SW:
+          # TODO: The default Hash and Security level needs refactoring to be
+          # fully configurable. Changing these defaults requires coordination
+          # SHA2 is hardcoded in several places, not only BCCSP
+          Hash: SHA2
+          Security: 256
+          # Location of Key Store
+          FileKeyStore:
+              # If "", defaults to 'mspConfigPath'/keystore
+              KeyStore:
+      # Settings for the PKCS#11 crypto provider (i.e. when DEFAULT: PKCS11)
+      PKCS11:
+          # Location of the PKCS11 module library
+          Library:
+          # Token Label
+          Label:
+          # User PIN
+          Pin:
+          Hash:
+          Security:
+
+
+  chaincode:
+    id: peer0.org1.deployment.com
+    address: peer0.org1.deployment.com:7054
+    listenAddress: 0.0.0.0:7054
+    asAServiceBuilderConfig: {"peername":"peer0org1"}
+    executeTimeout: 300s
+
+  metrics:
+    provider: prometheus
+
+  operations:
+    listenAddress: peer0.org1.deployment.com:9446
+
+ledger:
+
+  blockchain:
+
+  state:
+    stateDatabase: goleveldb
+    # Limit on the number of records to return per query
+    totalQueryLimit: 100000
+
+  history:
+    # enableHistoryDatabase - options are true or false
+    # Indicates if the history of key updates should be stored.
+    # All history 'index' will be stored in goleveldb, regardless if using
+    # CouchDB or alternate database for the state.
+    enableHistoryDatabase: true
+
+  pvtdataStore:
+    # the maximum db batch size for converting
+    # the ineligible missing data entries to eligible missing data entries
+    collElgProcMaxDbBatchSize: 5000
+    # the minimum duration (in milliseconds) between writing
+    # two consecutive db batches for converting the ineligible missing data entries to eligible missing data entries
+    collElgProcDbBatchesInterval: 1000
+    # The missing data entries are classified into two categories:
+    # (1) prioritized
+    # (2) deprioritized
+    # Initially, all missing data are in the prioritized list. When the
+    # reconciler is unable to fetch the missing data from other peers,
+    # the unreconciled missing data would be moved to the deprioritized list.
+    # The reconciler would retry deprioritized missing data after every
+    # deprioritizedDataReconcilerInterval (unit: minutes). Note that the
+    # interval needs to be greater than the reconcileSleepInterval
+    deprioritizedDataReconcilerInterval: 60m
+    # The frequency to purge private data (in number of blocks).
+    # Private data is purged from the peer's private data store based on
+    # the collection property blockToLive or an explicit chaincode call to PurgePrivateData().
+    purgeInterval: 100
+    # Whether to log private data keys purged from private data store (INFO level) when explicitly purged via chaincode
+    purgedKeyAuditLogging: true
+
+  snapshots:
+    # Path on the file system where peer will store ledger snapshots
+    # The path must be an absolute path.
+    rootDir: /var/hyperledger/production/snapshots
+
+
+# Chaincode settings
+chaincode:
+  externalBuilders: []
+  logging: 
+    level: INFO
+  executeTimeout: 300s

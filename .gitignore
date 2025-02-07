@@ -136,3 +136,6 @@ bin/
 fabric-ca-client/
 fabric-ca-server/
 fabric-ca-server-tls/
+
+# don't inclue organizations
+organizations
