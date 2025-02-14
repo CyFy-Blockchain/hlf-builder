@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 
-version: '3.7'
+version: "3.7"
 
 volumes:
   orderer.deployment.com:
@@ -13,7 +13,6 @@ networks:
     name: fabric_test_deployment
 
 services:
-
   orderer.deployment.com:
     container_name: orderer.deployment.com
     image: hyperledger/fabric-orderer:latest
@@ -46,9 +45,9 @@ services:
     working_dir: /root
     command: orderer
     volumes:
-        - ./organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/msp:/var/hyperledger/orderer/msp
-        - ./organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/:/var/hyperledger/orderer/tls
-        - orderer.deployment.com:/var/hyperledger/production/orderer
+      - ./organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/msp:/var/hyperledger/orderer/msp
+      - ./organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/:/var/hyperledger/orderer/tls
+      - orderer.deployment.com:/var/hyperledger/production/orderer
     ports:
       - 7060:7060
       - 7063:7063

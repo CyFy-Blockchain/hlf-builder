@@ -3,3 +3,5 @@
 ###
 
 rm -rf ./organizations
+rm -rf ./channel-artifacts
+rm log.txt

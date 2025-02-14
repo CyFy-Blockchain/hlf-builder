@@ -5,12 +5,11 @@
 #   Organizations: Defines the participating organizations in the network      #
 ################################################################################
 Organizations:
-
   # Orderer organization definition
   - &OrdererOrg
     Name: OrdererDeploymentMSP
     ID: OrdererDeploymentMSP
-    MSPDir: ./organizations/ordererOrganizations/deployment.com/msp
+    MSPDir: ../organizations/ordererOrganizations/deployment.com/msp
     Policies:
       # Defines who can read ledger data
       Readers:
@@ -29,7 +28,7 @@ Organizations:
   - &Org1
     Name: Org1DeploymentMSP
     ID: Org1DeploymentMSP
-    MSPDir: ./organizations/peerOrganizations/org1.deployment.com/msp
+    MSPDir: ../organizations/peerOrganizations/org1.deployment.com/msp
     Policies:
       # Defines who can read ledger data
       Readers:
@@ -50,16 +49,16 @@ Organizations:
 ################################################################################
 #   Orderer: Configures the ordering service (using Raft consensus)            #
 ################################################################################
-Orderer: 
-  OrdererType: etcdraft  # Defines the consensus protocol (Raft for HA)
+Orderer: &Orderer
+  OrdererType: etcdraft # Defines the consensus protocol (Raft for HA)
   Addresses:
-    - orderer.deployment.com:7060  # Orderer node address
+    - orderer.deployment.com:7060 # Orderer node address
   EtcdRaft:
     Consenters:
       - Host: orderer.deployment.com
         Port: 7060
-        ClientTLSCert: ./organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/server.crt
-        ServerTLSCert: ./organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/server.crt
+        ClientTLSCert: ../organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/server.crt
+        ServerTLSCert: ../organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/server.crt
   Policies:
     # Defines who can read orderer-related data
     Readers:
@@ -73,13 +72,18 @@ Orderer:
     Admins:
       Type: ImplicitMeta
       Rule: "MAJORITY Admins"
+    # BlockValidation specifies what signatures must be included in the block
+    # from the orderer for the peer to validate it.
+    BlockValidation:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
   Capabilities:
-    V2_0: true  # Enables Fabric v2.0 orderer capabilities
+    V2_0: true # Enables Fabric v2.0 orderer capabilities
 
 ################################################################################
 #   Application: Defines policies for application channels                     #
 ################################################################################
-Application:
+Application: &Application
   Policies:
     # Defines who can read data on application channels
     Readers:
@@ -93,27 +97,50 @@ Application:
     Admins:
       Type: Signature
       Rule: "OR('Org1DeploymentMSP.admin')"
+  Capabilities: &ApplicationCapabilities
+    V2_5: true # Enables Fabric v2.5 application capabilities
+
+Channel: &ChannelPolicies
+  # Policies defines the set of policies at this level of the config tree
+  # For Channel policies, their canonical path is
+  #   /Channel/<PolicyName>
+  Policies:
+    # Who may invoke the 'Deliver' API
+    Readers:
+      Type: ImplicitMeta
+      Rule: "ANY Readers"
+    # Who may invoke the 'Broadcast' API
+    Writers:
+      Type: ImplicitMeta
+      Rule: "ANY Writers"
+    # By default, who may modify elements at this config level
+    Admins:
+      Type: ImplicitMeta
+      Rule: "MAJORITY Admins"
+  # Capabilities describes the channel level capabilities, see the
+  # dedicated Capabilities section elsewhere in this file for a full
+  # description
   Capabilities:
-    V2_5: true  # Enables Fabric v2.5 application capabilities
+    V2_0: true
 
 ################################################################################
 #   Profiles: Defines the network genesis block and channel creation profiles  #
 ################################################################################
 Profiles:
-
   # Profile for generating the orderer genesis block
   GenesisProfile:
+    <<: *ChannelPolicies
     Orderer:
-      <<: *Orderer  # Uses the orderer settings defined above
+      <<: *Orderer # Uses the orderer settings defined above
     Consortiums:
       SampleConsortium:
         Organizations:
-          - *Org1  # Defines which orgs can create channels
+          - *Org1 # Defines which orgs can create channels
 
   # Profile for creating an application channel
   ChannelProfile:
-    Consortium: SampleConsortium  # Uses the consortium from GenesisProfile
+    Consortium: SampleConsortium # Uses the consortium from GenesisProfile
     Application:
-      <<: *Application  # Uses the application settings
+      <<: *Application # Uses the application settings
       Organizations:
-        - *Org1  # Includes Org1 in the channel
+        - *Org1 # Includes Org1 in the channel

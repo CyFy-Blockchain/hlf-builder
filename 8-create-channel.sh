@@ -1,8 +1,5 @@
 #!/bin/bash
 
-# imports
-. scripts/envVar.sh
-
 CHANNEL_NAME="$1"
 DELAY="$2"
 MAX_RETRY="$3"
@@ -14,34 +11,39 @@ BFT="$5"
 : ${VERBOSE:="false"}
 : ${BFT:=0}
 
-: ${CONTAINER_CLI:="docker"}
-if command -v ${CONTAINER_CLI}-compose >/dev/null 2>&1; then
-    : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI}-compose"}
-else
-    : ${CONTAINER_CLI_COMPOSE:="${CONTAINER_CLI} compose"}
-fi
-echo "Using ${CONTAINER_CLI} and ${CONTAINER_CLI_COMPOSE}"
+# Local variables
+PEER0_ORG1_CA="$PWD/organizations/peerOrganizations/org1.deployment.com/tlsca/tlsca.org1.deployment.com-cert.pem"
+PEER0_MSPCONFIGPATH="$PWD/organizations/peerOrganizations/org1.deployment.com/msp"
+PEER0_HOST_PORT="localhost:7153"
 
 if [ ! -d "channel-artifacts" ]; then
     mkdir channel-artifacts
 fi
 
-createChannelGenesisBlock() {
-    # setGlobals 1
-    which configtxgen
-    if [ "$?" -ne 0 ]; then
-        fatalln "configtxgen tool not found."
-    fi
-    local bft_true=$1
-    set -x
+# Set Configurations
+setPeerConfigs() {
+    export CORE_PEER_LOCALMSPID="Org1DeploymentMSP"
+    export CORE_PEER_TLS_ROOTCERT_FILE=$PEER0_ORG1_CA
+    export CORE_PEER_MSPCONFIGPATH=$PEER0_MSPCONFIGPATH
+    export CORE_PEER_ADDRESS=$PEER0_HOST_PORT
+}
+setOrdererConfigsAndJoinChannel() {
+    export ORDERER_CA=${PWD}/organizations/ordererOrganizations/deployment.com/tlsca/tlsca.deployment.com-cert.pem
+    export ORDERER_ADMIN_TLS_SIGN_CERT=${PWD}/organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/server.crt
+    export ORDERER_ADMIN_TLS_PRIVATE_KEY=${PWD}/organizations/ordererOrganizations/deployment.com/orderers/orderer.deployment.com/tls/server.key
+    ./bin/osnadmin channel join --channelID ${CHANNEL_NAME} --config-block ./channel-artifacts/${CHANNEL_NAME}.block -o localhost:7063 --ca-file "$ORDERER_CA" --client-cert "$ORDERER_ADMIN_TLS_SIGN_CERT" --client-key "$ORDERER_ADMIN_TLS_PRIVATE_KEY" >>log.txt 2>&1
+}
 
-    if [ $bft_true -eq 1 ]; then
-        configtxgen -profile ChannelUsingBFT -outputBlock ./channel-artifacts/${CHANNEL_NAME}.block -channelID $CHANNEL_NAME
-    else
-        configtxgen -profile ChannelUsingRaft -outputBlock ./channel-artifacts/${CHANNEL_NAME}.block -channelID $CHANNEL_NAME
+verifyResult() {
+    if [ $1 -ne 0 ]; then
+        echo "$2"
     fi
+}
+
+createChannelGenesisBlock() {
+    setPeerConfigs
+    ./bin/configtxgen -profile GenesisProfile -outputBlock ./channel-artifacts/${CHANNEL_NAME}.block -channelID $CHANNEL_NAME
     res=$?
-    { set +x; } 2>/dev/null
     verifyResult $res "Failed to generate channel configuration transaction..."
 }
 
@@ -49,17 +51,11 @@ createChannel() {
     # Poll in case the raft leader is not set yet
     local rc=1
     local COUNTER=1
-    local bft_true=$1
     echo "Adding orderers"
     while [ $rc -ne 0 -a $COUNTER -lt $MAX_RETRY ]; do
         sleep $DELAY
         set -x
-        . scripts/orderer.sh ${CHANNEL_NAME} >/dev/null 2>&1
-        if [ $bft_true -eq 1 ]; then
-            . scripts/orderer2.sh ${CHANNEL_NAME} >/dev/null 2>&1
-            . scripts/orderer3.sh ${CHANNEL_NAME} >/dev/null 2>&1
-            . scripts/orderer4.sh ${CHANNEL_NAME} >/dev/null 2>&1
-        fi
+        setOrdererConfigsAndJoinChannel
         res=$?
         { set +x; } 2>/dev/null
         let rc=$res
@@ -101,20 +97,17 @@ if [ $BFT -eq 1 ] && [ -d "organizations/fabric-ca/ordererOrg/msp" ]; then
 fi
 
 ## Create channel genesis block
-FABRIC_CFG_PATH=$PWD/../config/
 BLOCKFILE="./channel-artifacts/${CHANNEL_NAME}.block"
 
 echo "Generating channel genesis block '${CHANNEL_NAME}.block'"
-FABRIC_CFG_PATH=${PWD}/configtx
-if [ $BFT -eq 1 ]; then
-    FABRIC_CFG_PATH=${PWD}/bft-config
-fi
-createChannelGenesisBlock $BFT
+export FABRIC_CFG_PATH=${PWD}/configtx
+
+createChannelGenesisBlock
 
 ## Create channel
-# echo "Creating channel ${CHANNEL_NAME}"
-# createChannel $BFT
-# successln "Channel '$CHANNEL_NAME' created"
+echo "Creating channel ${CHANNEL_NAME}"
+createChannel
+echo "Channel '$CHANNEL_NAME' created"
 
 # ## Join all the peers to the channel
 # echo "Joining org1 peer to the channel..."
