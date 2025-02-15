@@ -14,5 +14,9 @@ EXPOSE 7055 17055
 # Set working directory
 WORKDIR /etc/hyperledger/fabric-ca-server
 
-# Ensure the target directory exists before starting the CA server
-CMD ["sh", "-c", "mkdir -p /etc/hyperledger/fabric-ca-server && fabric-ca-server start -b admin:adminpw -d"]
+# Copy entrypoint script & give execute permissions
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Set entrypoint script as the default command
+ENTRYPOINT ["/entrypoint.sh"]
