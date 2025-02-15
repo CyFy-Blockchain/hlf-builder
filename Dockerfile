@@ -14,11 +14,5 @@ EXPOSE 7055 17055
 # Set working directory
 WORKDIR /etc/hyperledger/fabric-ca-server
 
-# Ensure the directory exists before copying
-RUN mkdir -p /etc/hyperledger/fabric-ca-server
-
-# Copy the directory correctly (destination must end with `/`)
-COPY ./organizations/fabric-ca/org1/ /etc/hyperledger/fabric-ca-server/
-
-# Start the Fabric CA server
-CMD ["sh", "-c", "fabric-ca-server start -b admin:adminpw -d"]
+# Ensure the target directory exists before starting the CA server
+CMD ["sh", "-c", "mkdir -p /etc/hyperledger/fabric-ca-server && fabric-ca-server start -b admin:adminpw -d"]
