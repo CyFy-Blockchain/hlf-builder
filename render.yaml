@@ -1,12 +1,9 @@
 services:
-  - type: web
-    name: fabric-ca-org1
-    env: docker
-    plan: free
-    region: oregon
-    repo: https://github.com/CyFy-Blockchain/hlf-builder.git
-    branch: main
-    dockerContext: ./
+  - name: fabric-ca-org1
+    type: web
+    runtime: docker
+    repo: https://github.com/your-username/your-repo
+    plan: free # Change to "starter" or "standard" if needed
     envVars:
       - key: FABRIC_CA_HOME
         value: /etc/hyperledger/fabric-ca-server
@@ -16,6 +13,18 @@ services:
         value: "true"
       - key: FABRIC_CA_SERVER_PORT
         value: "7055"
-      - key: FABRIC_CA_SERVER_DB_TYPE
-        value: sqlite3
+      - key: FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS
+        value: 0.0.0.0:17055
+    envVarGroups: []
+    dockerContext: .
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /
+    disk:
+      name: fabric-ca-data
+      mountPath: /etc/hyperledger/fabric-ca-server
+      sizeGB: 1 # Adjust the storage size if needed
     autoDeploy: true
+    region: oregon # Change based on your preference
+    ports:
+      - 7055
+      - 17055
