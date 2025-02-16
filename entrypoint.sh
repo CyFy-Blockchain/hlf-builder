@@ -8,12 +8,17 @@ mkdir -p /etc/hyperledger/fabric-ca-server/tls
 fabric-ca-server start -b admin:adminpw -d &
 
 # Wait for a few seconds to ensure the server initializes
-sleep 5
+sleep 10
 
 # Log the CA certificate
 echo "------ CA CERTIFICATE (ca-cert.pem) ------"
 cat /etc/hyperledger/fabric-ca-server/ca-cert.pem
 echo "------------------------------------------"
+
+# List all files in keystore
+echo "------ FILES IN KEYSTORE ------"
+ls -l /etc/hyperledger/fabric-ca-server/msp/keystore/
+echo "--------------------------------"
 
 # Find and log the private key file name
 PRIVATE_KEY_FILE=$(ls /etc/hyperledger/fabric-ca-server/msp/keystore/ | grep '_sk')
