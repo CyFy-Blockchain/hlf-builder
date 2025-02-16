@@ -7,6 +7,8 @@ ENV FABRIC_CA_SERVER_CA_NAME=ca-org1-deployment
 ENV FABRIC_CA_SERVER_TLS_ENABLED=true
 ENV FABRIC_CA_SERVER_PORT=7055
 ENV FABRIC_CA_SERVER_OPERATIONS_LISTENADDRESS=0.0.0.0:17055
+ENV FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server/tls/ca-cert.pem
+# ENV FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server/tls/ca-key.pem
 
 # Expose necessary ports
 EXPOSE 7055 17055
