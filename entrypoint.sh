@@ -13,9 +13,10 @@ fi
 # Ensure TLS files exist before starting
 if [ "$FABRIC_CA_SERVER_TLS_ENABLED" = "true" ]; then
     export FABRIC_CA_SERVER_TLS_CERTFILE="/etc/hyperledger/fabric-ca-server/tls/ca-cert.pem"
-    export FABRIC_CA_SERVER_TLS_KEYFILE="/etc/hyperledger/fabric-ca-server/tls/ca-key.pem"
+    # export FABRIC_CA_SERVER_TLS_KEYFILE="/etc/hyperledger/fabric-ca-server/tls/ca-key.pem"
 
-    if [ ! -f "$FABRIC_CA_SERVER_TLS_CERTFILE" ] || [ ! -f "$FABRIC_CA_SERVER_TLS_KEYFILE" ]; then
+    # if [ ! -f "$FABRIC_CA_SERVER_TLS_CERTFILE" ] || [ ! -f "$FABRIC_CA_SERVER_TLS_KEYFILE" ]; then
+    if [ ! -f "$FABRIC_CA_SERVER_TLS_CERTFILE" ]; then
         echo "ERROR: TLS is enabled, but cert or key file is missing!"
         exit 1
     fi
